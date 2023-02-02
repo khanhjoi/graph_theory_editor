@@ -19,8 +19,11 @@
 
     </div>
     <button id="delete">xoa</button>
+    <input id="add" type="checkbox" name="chinh sua">
+    <input id="addEdge" type="text" name="">
     <script src="/test2/node_modules/cytoscape/dist/cytoscape.min.js"></script>
-    <script>
+    <script src="index.js"></script>
+    <!-- <script>
     var cy =   cytoscape({
       container: document.getElementById('cy'),
 
@@ -85,25 +88,29 @@
     // chon va xoa 
     cy.on('click', function(e){
       
-      // cờ
       var clicked = e.target;
-
-      // kkiểm tra có phải là đỉnh hoặt cung => xóa
+      // cờ
+      var flag = false;
+      // kiểm tra có phải là đỉnh hoặt cung => xóa
       if(clicked._private.group === "nodes" || clicked._private.group === "edges" ){
-        var btnDlt = document.getElementById('delete');
-        btnDlt.onclick = function() {
-          cy.remove(clicked);
-        }
+        flag = true
       }else {
         // reset lại cờ
-        clicked = undefined;
+        flag = false;
+      }
+      
+      const btnDlt = document.getElementById('delete');
+      btnDlt.onclick = function() {
+        if(flag){
+          cy.remove(clicked);
+        }
       }
     });
 
    
    
  
-    </script>
+    </script> -->
 </body>
 </html>
 
