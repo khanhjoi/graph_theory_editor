@@ -35,12 +35,13 @@ var cy =   cytoscape({
   panningEnabled: false,
 });
 
-
+// tao danh sach nut dau tien
+var arrayNodes = [];
+refreshListNodes();
 
 var numberNodes = 2;
-
 var btnAdd = document.getElementById('add'); 
-console.log(cy._private)
+
 // ======================== Thêm Cung ======================
 btnAdd.onclick = function(e) {
   
@@ -75,10 +76,12 @@ btnAdd.onclick = function(e) {
     }else {
       // xóa đỉnh đã bấm trước đó
       ListOpt1.innerHTML = ``;
+      // goi lai tao danh sach nut
+      refreshListNodes();    
       // thêm đỉnh vào danh sách chọn
-      for(var i = 0; i < numberNodes; i++) {
+      for(var i = 0; i < arrayNodes.length; i++) {
         var ListNodes = document.createElement('option');
-        ListNodes.innerHTML = `${i+1}`
+        ListNodes.innerHTML = `${arrayNodes[i]}`
         ListOpt1.appendChild(ListNodes);
       }
     }
@@ -90,10 +93,12 @@ btnAdd.onclick = function(e) {
     }else {
       // xóa đỉnh đã bấm trước đó
       ListOpt2.innerHTML = ``;
+      // goi lai tao danh sach nut
+      refreshListNodes();    
       // thêm đỉnh vào danh sách chọn
-      for(var i = 0; i < numberNodes; i++) {
+      for(var i = 0; i < arrayNodes.length; i++) {
         var ListNodes = document.createElement('option');
-        ListNodes.innerHTML = `${i+1}`
+        ListNodes.innerHTML = `${arrayNodes[i]}`
         ListOpt2.appendChild(ListNodes);
       }
     }
@@ -103,8 +108,6 @@ btnAdd.onclick = function(e) {
   // thêm cung vào độ thị
   
   btnAddEdge.onclick = function(){
-    console.log(ListOpt1.value, ListOpt2.value)
-    
     cy.add([
       { group: 'edges', data: { id: `${ListOpt1.value}${ListOpt2.value}`, source: `${ListOpt1.value}`, target: `${ListOpt2.value}` } }
     ])
@@ -127,6 +130,7 @@ cy.on('click', function(e){
       cy.add([
         { group: 'nodes', data: { id: `${numberNodes}` }, position: { x: 300, y: 300 } },
       ]);  
+      
     }
   }
   // ===============================================
@@ -142,6 +146,7 @@ cy.on('click', function(e){
     flag = false;
   }
   
+  // kiem tra va xoa nut
   const btnDlt = document.getElementById('delete');
   if(btnDlt) {
     btnDlt.onclick = function() {
@@ -155,3 +160,16 @@ cy.on('click', function(e){
 
 
 
+function refreshListNodes() {
+  var arrayElement = Object.entries(cy._private.elements);
+  // reset lai mảng
+  arrayNodes = [];
+  for (let i = 0; i < arrayElement.length - 2; i++) {
+    //kiem tra co phai la nut moi cho vao danh sach nut
+    if(arrayElement[i][1]) {
+      if(arrayElement[i][1]._private.group === 'nodes') {
+        arrayNodes.push(arrayElement[i][1]._private.data.id)
+      }
+    }
+   }
+}
