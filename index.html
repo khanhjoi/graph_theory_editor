@@ -15,7 +15,6 @@
           height: 100px;
         }
     </style>
-    <script src="cytoscape.min.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -33,94 +32,7 @@
     
     <script src="/test2/node_modules/cytoscape/dist/cytoscape.min.js"></script>
     <script src="index.js"></script>
-    <!-- <script>
-    var cy =   cytoscape({
-      container: document.getElementById('cy'),
-
-      elements: {
-        nodes: [
-          {
-            data: { id: 'a' }
-          },
-
-          {
-            data: { id: 'b' }
-          },
-          {
-            data: { id: 'c' }
-          }
-          ,
-          {
-            data: { id: 'd' }
-          }
-        ],
-        edges: [
-          {
-            data: { id: 'ab', source: 'a', target: 'b' }
-          },
-          {
-            data: { id: 'ac', source: 'a', target: 'c' }
-          },
-          {
-            data: { id: 'bd', source: 'b', target: 'd' }
-          }
-        ]
-        },
-
-      layout: {
-          name: 'grid',
-          rows: 1
-      },
-
-    // so we can see the ids
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'label': 'data(id)'
-          }
-        }
-      ],
-      panningEnabled: false,
-    });
-
-    var eles = cy.add([
-      { group: 'nodes', data: { id: 'n0' }, position: { x: 100, y: 100 } },
-      { group: 'nodes', data: { id: 'n1' }, position: { x: 200, y: 200 } },
-      { group: 'edges', data: { id: 'e0', source: 'n0', target: 'n1' } }
-    ]);
-
-    // remove edges
-    var j = cy.$('#e0');
-    
-    cy.remove( j );
-
-    // chon va xoa 
-    cy.on('click', function(e){
-      
-      var clicked = e.target;
-      // cờ
-      var flag = false;
-      // kiểm tra có phải là đỉnh hoặt cung => xóa
-      if(clicked._private.group === "nodes" || clicked._private.group === "edges" ){
-        flag = true
-      }else {
-        // reset lại cờ
-        flag = false;
-      }
-      
-      const btnDlt = document.getElementById('delete');
-      btnDlt.onclick = function() {
-        if(flag){
-          cy.remove(clicked);
-        }
-      }
-    });
-
-   
-   
- 
-    </script> -->
+    <script src="setting.js"></script>
 </body>
 </html>
 
