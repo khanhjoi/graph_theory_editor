@@ -2,18 +2,10 @@ var cy =   cytoscape({
   container: document.getElementById('cy'),
   elements: {
     nodes: [
-      {
-        data: { id: '1' }
-      },
-
-      {
-        data: { id: '2' }
-      },
+    
     ],
     edges: [
-      {
-        data: { id: '12', source: '1', target: '2' }
-      },
+      
     ]
     },
 
@@ -31,13 +23,15 @@ var cy =   cytoscape({
       }
     }
   ],
+  
   panningEnabled: false,
+
 });
 
 // tao danh sach nut dau tien
 var arrayNodes = [];
 var arrayEdges = [];
-var numberNodes = 2;
+var numberNodes = 0;
 var btnAdd = document.getElementById('add'); 
 
 // ======================== Thêm Cung ======================
@@ -58,6 +52,8 @@ btnAdd.onclick = function(e) {
     editContainer.innerHTML = ``;
   }
 
+
+  
   // danh sách đỉnh 
   var ListOpt1 = document.getElementById('nodes1');
   var ListOpt2 = document.getElementById('nodes2');
@@ -115,7 +111,6 @@ btnAdd.onclick = function(e) {
       refreshListNodes();
       // them cung vao ma tran
       addEdge();
-      console.log(matrix);
     }
   }
 }
@@ -185,3 +180,4 @@ function refreshListNodes() {
     }
    }
 }
+
