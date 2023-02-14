@@ -131,8 +131,6 @@ cy.on('click', function(e){
         { group: 'nodes', data: { id: `${numberNodes}` }, position: { x: 300, y: 300 } },
       ]);
       refreshListNodes();
-      initGraph();
-      
     }
   }
   
@@ -155,8 +153,8 @@ cy.on('click', function(e){
     btnDlt.onclick = function() {
       if(flag){
         cy.remove(clicked);
-        refreshListNodes();
       }
+      refreshListNodes();
     }
   }
   // =========================================

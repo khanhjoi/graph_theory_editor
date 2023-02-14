@@ -1,8 +1,10 @@
 
-var matrix = new Array(arrayNodes.length);
+var matrix = [];
 
 // Tạo ma trận
 function initGraph() {
+    matrix = new Array(arrayNodes.length);
+
     for (let i = 0; i < arrayNodes.length; i++) {
         matrix[i] = new Array(arrayNodes.length);
     };
@@ -67,18 +69,19 @@ class Stack {
     }
 }
 
-var mark = [];
+var visit = [];
+
+function initVisit() {
+     for (let i = 0; i < matrix.length; i++) {
+        visit[i] = 0;
+    }
+}
 
 
 // duyệt theo chiều sâu
 function Depth_first_search(node) {
     // khoi tao danh sach
     let stack = new Stack();
-
-    // khởi tạo đánh dấu
-    for (let i = 0; i < matrix.length; i++) {
-        mark[i] = 0;
-    }
     console.log("vao duyet");
 
     // thêm nút đầu tiên vào stack
@@ -89,12 +92,12 @@ function Depth_first_search(node) {
         let x = stack.peek();
         stack.pop();
 
-        if(mark[x] != 0) {
+        if(visit[x] != 0) {
             continue;
         }
 
-        console.log(x);
-        mark[x] = 1;
+        // console.log(x);
+        visit[x] = 1;
 
         let list = neighbor(x);
 
@@ -105,9 +108,29 @@ function Depth_first_search(node) {
     }
 }
 
+function ConnectedComponent() {
+    // làm mới lại danh sách nút
+    refreshListNodes();
+    // khởi tạo lại đồ thị
+    initGraph();
+    // thêm cung vào đồ thị
+    addEdge();
+    // khởi tạo lại danh sách thăm
+    initVisit();
+    let cnt = 0;
+    for( let i = 0; i < matrix.length; i++) {
+        if(visit[i] == 0) {
+            cnt ++;
+            Depth_first_search(i);
+        }
+    }
+    return cnt
+}
+
 const duyet = document.getElementById('duyet');
 
 duyet.addEventListener('click', () => {
-    Depth_first_search(0);
-    console.log(arrayNodes)
+    let cnt = ConnectedComponent();
+    console.log(cnt)
+    console.log(matrix)
 })
