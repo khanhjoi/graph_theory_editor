@@ -23,10 +23,23 @@ var cy =   cytoscape({
       }
     }
   ],
-  
+  motionBlur : true,
   panningEnabled: false,
 
 });
+
+
+// export
+var jpg64 = cy.jpg({
+  scale : '0.5',
+  quality: '1',
+});
+const exportBtn = document.getElementById('export');
+
+exportBtn.addEventListener('click', function(e) {
+  document.querySelector('#img').setAttribute('src', jpg64);
+})
+
 
 // tao danh sach nut dau tien
 var arrayNodes = [];
@@ -41,12 +54,12 @@ btnAdd.onclick = function(e) {
 
   if(btnAdd.checked) {
     editContainer.innerHTML = `
-    <button id="delete">xoa</button>
-    <label for="nodes1">Choose nodes 1:</label>
+    <button id="delete" class="button-53 btn">Xóa</button>
+    <label for="nodes1">Đỉnh thứ nhất:</label>
     <select name="nodes1" id="nodes1"></select>
-    <label for="nodes2">Choose nodes 2:</label>
+    <label for="nodes2" style="margin-left: 16px">Đỉnh thứ hai:</label>
     <select name="nodes2" id="nodes2"></select>
-    <button id="addEdge">them cung</button>
+    <button id="addEdge" class="button-53 btn">Thêm cung</button>
     `
   }else {
     editContainer.innerHTML = ``;

@@ -128,15 +128,15 @@ function ConnectedComponent() {
     return cnt;
 }
 
-const duyet = document.getElementById('duyet');
+const Connect = document.getElementById('Connect');
 
-duyet.addEventListener('click', () => {
+Connect.addEventListener('click', () => {
     let cnt = ConnectedComponent();
     const show = document.querySelector(".show_ConnectCpn");
     if(cnt > 0) {
         show.innerHTML  = `${cnt}`;
     }else {
-        show.innerHTML  = ``;
+        show.innerHTML  = `Không có miền liên thông nào`;
 
     }
     console.log(cnt)
@@ -153,8 +153,6 @@ findBtn.addEventListener('click', () => {
     var hamiltonian = new HamiltonianCycle();
     hamiltonian.hamCycle(matrix);
 })
-
-
 
 class HamiltonianCycle {
     constructor() {
@@ -236,7 +234,7 @@ class HamiltonianCycle {
         as the graph is undirected */
         this.path[0] = 0;
         if (this.hamCycleUtil(graph, this.path, 1) == false) {
-            let show = document.getElementById("showSolution");
+            let show = document.querySelector(".showSolution");
             show.innerHTML = "Không tồn tại chu trình Hamilton"
             return 0;
         }
@@ -247,7 +245,7 @@ class HamiltonianCycle {
  
         /* A utility function to print solution */
     printSolution(path) {
-        let show = document.getElementById("showSolution");
+        let show =  document.querySelector(".showSolution");
         show.innerText = "Chu trình hamilton: "
         for (var i = 0; i < this.V; i++) show.innerText  += `  ${arrayNodes[path[i]]}`;
  
@@ -256,4 +254,3 @@ class HamiltonianCycle {
         show.innerText += ` ${arrayNodes[path[0]]}`;
     }
 }
-

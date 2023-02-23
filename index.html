@@ -10,34 +10,43 @@
             height: 600px;
             display: block;
         }
-        #edit{
-          width: auto;
-          height: 100px;
-        }
+
     </style>
+    <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 <body>
-    <div id="cy">
-
-    </div>
-    <div>
-      <input id="add" type="checkbox" name="chinh sua">
-      <!-- <button id="delete">xoa</button> -->
-      <div id="edit">
+    <section id="container">
+      <div id="cy">
 
       </div>
-    </div>
-    <div id="ConnectedComponent">
-      <button id="duyet">Tìm số miền liên thông</button>
-      <div class="show_ConnectCpn">
-
+      <div class = "handle_Graph">
+        <div>
+          
+          <h1 style="display: inline-block">Chỉnh sửa đồ thị:</h1>
+          
+          <input id="add" type="checkbox" name="chinh sua">
+          <div id="edit">
+    
+          </div>
+        </div>
+        <h1>Chức năng:</h1>
+        <div id="ConnectedComponent">
+          <button id="Connect" class="button-53 btn">Tìm số miền liên thông</button>
+          <div class="show_ConnectCpn">
+    
+          </div>
+        </div>
+        <div id="findHamilton">
+          <button id="find" class="button-53 btn">Tìm chu trình</button>
+          <div class="showSolution"></div>
+        </div>
+        <div id="export">
+          <button id="exportBtn" class="button-53 btn">xuất file</button>
+          <img src="" alt="" id ="img">
+        </div>
       </div>
-    </div>
-    <div id="findHamilton">
-      <button id="find">Tìm chu trình</button>
-      <div id="showSolution"></div>
-    </div>
+    </section>
     
     <script src="/test2/node_modules/cytoscape/dist/cytoscape.min.js"></script>
     <script src="index.js"></script>
