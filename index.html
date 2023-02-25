@@ -5,45 +5,44 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        #cy {
-            width: 600px;
-            height: 600px;
-            display: block;
-        }
+        
 
     </style>
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
+    <title>Graph_edit</title>
 </head>
 <body>
-    <section id="container">
-      <div id="cy">
+    <section >
+      <h2 class="Title">Đồ Thị</h2>
+      <div id="container">
+        <div id="cy">
 
-      </div>
-      <div class = "handle_Graph">
-        <div>
-          
-          <h1 style="display: inline-block">Chỉnh sửa đồ thị:</h1>
-          
-          <input id="add" type="checkbox" name="chinh sua">
-          <div id="edit">
-    
+        </div>
+        <div class="handle_Graph">
+          <div id="edit_graph">
+            <h1 style="display: inline-block">Chỉnh sửa đồ thị:</h1>
+            <input id="add" type="checkbox" name="chinh sua">
+            <div id="edit">
+      
+            </div>
           </div>
-        </div>
-        <h1>Chức năng:</h1>
-        <div id="ConnectedComponent">
-          <button id="Connect" class="button-53 btn">Tìm số miền liên thông</button>
-          <div class="show_ConnectCpn">
-    
-          </div>
-        </div>
-        <div id="findHamilton">
-          <button id="find" class="button-53 btn">Tìm chu trình</button>
-          <div class="showSolution"></div>
-        </div>
-        <div id="export">
-          <button id="exportBtn" class="button-53 btn">xuất file</button>
-          <img src="" alt="" id ="img">
+          <div id="function">
+            <h1>Chức năng:</h1>
+            <div id="ConnectedComponent">
+              <button id="Connect" class="button-55 btn">Tìm số miền liên thông</button>
+              <div class="show_ConnectCpn">
+        
+              </div>
+            </div>
+            <div id="findHamilton">
+              <button id="find" class="button-55 btn">Tìm chu trình</button>
+              <div class="showSolution"></div>
+            </div>
+            <div id="export">
+              <button id="exportBtn" class="button-55 btn">xuất file</button>
+              <img src="" alt="" id ="img">
+            </div>
+          </div> 
         </div>
       </div>
     </section>

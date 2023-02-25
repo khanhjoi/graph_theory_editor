@@ -1,4 +1,4 @@
-var cy =   cytoscape({
+var cy =  cytoscape({
   container: document.getElementById('cy'),
   elements: {
     nodes: [
@@ -54,12 +54,18 @@ btnAdd.onclick = function(e) {
 
   if(btnAdd.checked) {
     editContainer.innerHTML = `
-    <button id="delete" class="button-53 btn">Xóa</button>
-    <label for="nodes1">Đỉnh thứ nhất:</label>
-    <select name="nodes1" id="nodes1"></select>
-    <label for="nodes2" style="margin-left: 16px">Đỉnh thứ hai:</label>
-    <select name="nodes2" id="nodes2"></select>
-    <button id="addEdge" class="button-53 btn">Thêm cung</button>
+    <div class="group_editBTN">
+      <button id="delete" class="button-55 btn ml-15">Xóa</button>
+      <button id="addEdge" class="button-55 btn ml-15">Thêm cung</button>
+    </div>
+    <div class="edit_select">
+      <h4>Chọn cung</h4>
+      <label for="nodes1">Đỉnh thứ nhất:</label>
+      <select name="nodes1" id="nodes1"></select>
+      <label for="nodes2" style="margin-left: 16px">Đỉnh thứ hai:</label>
+      <select name="nodes2" id="nodes2"></select>
+    </div>
+    
     `
   }else {
     editContainer.innerHTML = ``;
@@ -192,3 +198,32 @@ function refreshListNodes() {
    }
 }
 
+var cy2 =  cytoscape({
+  container: document.getElementById('cy'),
+  elements: {
+    nodes: [
+    
+    ],
+    edges: [
+      
+    ]
+    },
+
+  layout: {
+      name: 'grid',
+      rows: 1
+  },
+
+// so we can see the ids
+  style: [
+    {
+      selector: 'node',
+      style: {
+        'label': 'data(id)'
+      }
+    }
+  ],
+  motionBlur : true,
+  panningEnabled: false,
+
+});
