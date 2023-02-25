@@ -1,6 +1,14 @@
+body{
+  background-color: #d4f1fb;
+}
 #cy {
   width: 600px;
   height: 600px;
+  display: block;
+}
+#cy2 {
+  width: 300px;
+  height: 300px;
   display: block;
 }
 
@@ -15,17 +23,18 @@
     padding: 14px;
 }
 
+#cy2,
 #cy{
     background-color: #ccc;
     border-radius: 4px;
     border: 2px solid #000000;
-
 }
 
 .Title{
   margin-left: 4%;
-  font-size: 1.8rem;
-  
+  font-size: 2rem;
+  text-align: center;
+  color: #d35c38;
 }
 
 #function{
@@ -42,8 +51,6 @@
   font-size: 16px;
   font-weight: bold;
 }
-
-
 
 .btn{
     margin: 2% auto;

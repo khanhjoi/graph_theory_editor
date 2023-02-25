@@ -25,21 +25,7 @@ var cy =  cytoscape({
   ],
   motionBlur : true,
   panningEnabled: false,
-
 });
-
-
-// export
-var jpg64 = cy.jpg({
-  scale : '0.5',
-  quality: '1',
-});
-const exportBtn = document.getElementById('export');
-
-exportBtn.addEventListener('click', function(e) {
-  document.querySelector('#img').setAttribute('src', jpg64);
-})
-
 
 // tao danh sach nut dau tien
 var arrayNodes = [];
@@ -121,15 +107,18 @@ btnAdd.onclick = function(e) {
 
   let btnAddEdge = document.getElementById('addEdge');
   // thêm cung vào độ thị
+  
   if(btnAddEdge) {
     btnAddEdge.onclick = function(){
-      cy.add([
-        { group: 'edges', data: { id: `${ListOpt1.value}${ListOpt2.value}`, source: `${ListOpt1.value}`, target: `${ListOpt2.value}` } },   
-      ]);
-      // lam moi lai danh sach cung va danh sach dinh
-      refreshListNodes();
-      // them cung vao ma tran
-      addEdge();
+      if(ListOpt1.innerText != "" &&  ListOpt2.innerText != ""){
+        cy.add([
+          { group: 'edges', data: { id: `${ListOpt1.value}${ListOpt2.value}`, source: `${ListOpt1.value}`, target: `${ListOpt2.value}` } },   
+        ]);
+        // lam moi lai danh sach cung va danh sach dinh
+        refreshListNodes();
+        // them cung vao ma tran
+        addEdge();
+      }
     }
   }
 }
@@ -180,6 +169,7 @@ cy.on('click', function(e){
 });
 
 function refreshListNodes() {
+  // Chuyển mảng obj sang thành array
   var arrayElement = Object.entries(cy._private.elements);
   // reset lai mảng
   arrayNodes = [];
@@ -197,33 +187,3 @@ function refreshListNodes() {
     }
    }
 }
-
-var cy2 =  cytoscape({
-  container: document.getElementById('cy'),
-  elements: {
-    nodes: [
-    
-    ],
-    edges: [
-      
-    ]
-    },
-
-  layout: {
-      name: 'grid',
-      rows: 1
-  },
-
-// so we can see the ids
-  style: [
-    {
-      selector: 'node',
-      style: {
-        'label': 'data(id)'
-      }
-    }
-  ],
-  motionBlur : true,
-  panningEnabled: false,
-
-});

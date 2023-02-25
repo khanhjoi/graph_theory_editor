@@ -16,6 +16,7 @@ function initGraph() {
     };
 }
 
+
 // thêm cung
 function addEdge() {
     initGraph();
@@ -83,8 +84,6 @@ function initVisit() {
 function Depth_first_search(node) {
     // khoi tao danh sach
     let stack = new Stack();
-    console.log("vao duyet");
-
     // thêm nút đầu tiên vào stack
     stack.push(node);
 
@@ -99,7 +98,7 @@ function Depth_first_search(node) {
 
         // console.log(x);
         visit[x] = 1;
-
+        
         let list = neighbor(x);
 
         for (let i = 0; i < list.length; i++) {
@@ -139,118 +138,132 @@ Connect.addEventListener('click', () => {
         show.innerHTML  = `Không có miền liên thông nào`;
 
     }
-    console.log(cnt)
 })
 
-
-// Tìm chu trình hamilton
-const findBtn= document.getElementById('find');
-findBtn.addEventListener('click', () => {
-    refreshListNodes();
-    addEdge();
-
-    console.log(matrix)
-    var hamiltonian = new HamiltonianCycle();
-    hamiltonian.hamCycle(matrix);
-})
-
+// định nghĩa lớp + phước thức để tìm hamilton
 class HamiltonianCycle {
     constructor() {
         this.V = arrayNodes.length;
         this.path = [];
     }
  
-    /* A utility function to check
-    if the vertex v can be added at
-    index 'pos'in the Hamiltonian Cycle
-    constructed so far (stored in 'path[]') */
+    /* kiểm tra coi đỉnh v có thể thêm vào chu trình Hamilton hay không*/
     isSafe(v, graph, path, pos) {
-        /* Check if this vertex is
-        an adjacent vertex of the
-        previously added vertex. */
+        /* kiểm tra coi đỉnh hiện tại có kề với đỉnh ở phía trước hay kh */
         if ( graph[path[pos - 1]][v] == 0) return false;
  
-        /* Check if the vertex has already
-        been included. This step can be
-        optimized by creating an array
-        of size V */
+        /* coi đỉnh có ở trong đường đi phía trước hay không */
         for (var i = 0; i < pos; i++) if (path[i] == v) return false;
         
         return true;
     }
  
-    /* A recursive utility function
-    to solve hamiltonian cycle problem */
+    /*đệ quy để tìm chu trình hamilton*/
     hamCycleUtil(graph, path, pos) {
-        /* base case: If all vertices
-        are included in Hamiltonian Cycle */
+        /* Trường hợp các đỉnh đã được thêm vào tru trình Hamilton */
         if (pos == this.V) {
-            // And if there is an edge from the last included
-            // vertex to the first vertex
+            // nếu có đường đi từ đỉnh cuối đến đỉnh đầu => có chu trình hamilton
             if (graph[path[pos - 1]][path[0]] == 1) return true;
             else return false;
         }
  
-        // Try different vertices as a next candidate in
-        // Hamiltonian Cycle. We don't try for 0 as we
-        // included 0 as starting point in hamCycle()
+        // kiểm tra các đỉnh khác trong đồ thị
+        // không kiểm tra đỉnh 0, đỉnh không là đỉnh bắt đầu
         for (var v = 1; v < this.V; v++) {
-            /* Check if this vertex can be
-            added to Hamiltonian Cycle */
+            /* Nếu đỉnh có thể thêm vào chu trình */
             if (this.isSafe(v, graph, path, pos)) {
               path[pos] = v;
  
-              /* recur to construct rest of the path */
+              /* đệ quy lại cho đến khi gặp đỉnh cuối */
               if (this.hamCycleUtil(graph, path, pos + 1) == true) return true;
  
-              /* If adding vertex v doesn't
-                lead to a solution, then remove it */
+              /* Nếu đỉnh không phải là đường đi hamilton thì trả về vị trí trước đó */
               path[pos] = -1;
             }
         }
  
-          /* If no vertex can be added to Hamiltonian Cycle
-        constructed so far, then return false */
-          return false;
+          /* Nếu không có đỉnh nào thêm vào => không có chu trình hamilton*/
+        return false;
     }
  
-        /* This function solves the Hamiltonian
-    Cycle problem using Backtracking. It
-    mainly uses hamCycleUtil() to solve the
-    problem. It returns false if there
-    is no Hamiltonian Cycle possible,
-    otherwise return true and prints the path.
-    Please note that there may be more than
-    one solutions, this function prints one
-    of the feasible solutions. */
+    
     hamCycle(graph) {
         this.path = new Array(this.V).fill(0);
         for (var i = 0; i < this.V; i++) this.path[i] = -1;
  
-        /* Let us put vertex 0 as the first
-        vertex in the path. If there is a
-        Hamiltonian Cycle, then the path can be
-        started from any point of the cycle
-        as the graph is undirected */
+        // cho đỉnh đầu vào chu trình
         this.path[0] = 0;
+
+        // trường hợp không có chu trình hamilton
         if (this.hamCycleUtil(graph, this.path, 1) == false) {
             let show = document.querySelector(".showSolution");
-            show.innerHTML = "Không tồn tại chu trình Hamilton"
+            show.innerHTML = "Không tồn tại chu trình Hamilton";
+            hamiltonianPart = "Không tồn tại chu trình Hamilton";
             return 0;
         }
  
-          this.printSolution(this.path);
-          return 1;
-        }
+        this.printSolution(this.path);
+        return 1;
+    }
  
-        /* A utility function to print solution */
+    // in chu trình hamilton
     printSolution(path) {
         let show =  document.querySelector(".showSolution");
         show.innerText = "Chu trình hamilton: "
-        for (var i = 0; i < this.V; i++) show.innerText  += `  ${arrayNodes[path[i]]}`;
- 
-        // Let us print the first vertex again
-        // to show the complete cycle
+        for (var i = 0; i < this.V; i++) {
+            hamiltonianPart.push(arrayNodes[path[i]]);
+            show.innerText  += `  ${arrayNodes[path[i]]}`;
+        }
+
+        hamiltonianPart.push(arrayNodes[path[0]]);
         show.innerText += ` ${arrayNodes[path[0]]}`;
     }
 }
+
+//  ***** Tìm chu trình hamilton ****
+const findBtn= document.getElementById('find');
+findBtn.addEventListener('click', () => {
+    // làm mới danh sách đỉnh cung
+    refreshListNodes();
+    // thêm lại các đỉnh vào ma trận
+    addEdge();
+    var hamiltonian = new HamiltonianCycle();
+    hamiltonian.hamCycle(matrix);
+})
+
+
+
+var hamiltonianPart = [];
+// export text
+function saveFileText(){
+    // làm mới danh sách đỉnh cung
+    refreshListNodes();
+    // thêm lại các đỉnh vào ma trận
+    addEdge();
+    var hamiltonian = new HamiltonianCycle();
+    hamiltonian.hamCycle(matrix);
+
+    var blob = new Blob([`******Thông tin đồ thị****** 
+    - Danh sách đỉnh: ${arrayNodes}
+    - Danh sách cung: ${arrayEdges}
+    - Số miền liên thông: ${ConnectedComponent()}
+    - Chu trình Hamilton: ${hamiltonianPart}
+    `],{ type: "text/plain;charset=utf-8" });
+    saveAs(blob, "Graph.txt");
+}
+
+const exportBtn = document.getElementById('export');  
+exportBtn.addEventListener('click', function(e) {
+    if(arrayNodes.length === 0) {
+        alert('Bạn chưa vẽ đồ thị !!!');
+        return ;
+    }
+    saveFileText();
+    var canvas = document.querySelectorAll('canvas');
+    console.log(canvas);
+    canvas[2].toBlob(function(blob) {
+        saveAs(blob, "pretty image.png");
+    });
+
+});
+  
