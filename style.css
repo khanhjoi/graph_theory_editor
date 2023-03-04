@@ -18,9 +18,22 @@ body{
 
 }
 
-.handle_Graph{
-    width: 30%;
+.navigation{
+    width: 42%;
     padding: 14px;
+}
+
+.nav_list{
+  display: flex;
+}
+
+.w3-button.active {
+  background-color: #ccc;
+  color: #000;
+}
+
+.nav_btn_item{
+  list-style: none;
 }
 
 #cy2,

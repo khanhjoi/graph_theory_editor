@@ -96,9 +96,10 @@ function Depth_first_search(node) {
             continue;
         }
 
-        // console.log(x);
         visit[x] = 1;
         
+
+        showElement(x);     
         let list = neighbor(x);
 
         for (let i = 0; i < list.length; i++) {
@@ -131,13 +132,14 @@ const Connect = document.getElementById('Connect');
 
 Connect.addEventListener('click', () => {
     let cnt = ConnectedComponent();
+
     const show = document.querySelector(".show_ConnectCpn");
     if(cnt > 0) {
         show.innerHTML  = `${cnt}`;
     }else {
         show.innerHTML  = `Không có miền liên thông nào`;
-
     }
+    
 })
 
 // định nghĩa lớp + phước thức để tìm hamilton
@@ -173,7 +175,6 @@ class HamiltonianCycle {
             /* Nếu đỉnh có thể thêm vào chu trình */
             if (this.isSafe(v, graph, path, pos)) {
               path[pos] = v;
- 
               /* đệ quy lại cho đến khi gặp đỉnh cuối */
               if (this.hamCycleUtil(graph, path, pos + 1) == true) return true;
  
@@ -198,6 +199,9 @@ class HamiltonianCycle {
         if (this.hamCycleUtil(graph, this.path, 1) == false) {
             let show = document.querySelector(".showSolution");
             show.innerHTML = "Không tồn tại chu trình Hamilton";
+
+            // làm mới lại file
+            hamiltonianPart = [];
             hamiltonianPart = "Không tồn tại chu trình Hamilton";
             return 0;
         }
@@ -210,14 +214,20 @@ class HamiltonianCycle {
     printSolution(path) {
         let show =  document.querySelector(".showSolution");
         show.innerText = "Chu trình hamilton: "
+        // làm mới lại file
+        hamiltonianPart = [];
         for (var i = 0; i < this.V; i++) {
-            hamiltonianPart.push(arrayNodes[path[i]]);
+            hamiltonianPart.push(arrayNodes[path[i]]);          
             show.innerText  += `  ${arrayNodes[path[i]]}`;
         }
+        showHighlight(path);
 
         hamiltonianPart.push(arrayNodes[path[0]]);
         show.innerText += ` ${arrayNodes[path[0]]}`;
+        
     }
+
+    
 }
 
 //  ***** Tìm chu trình hamilton ****
@@ -262,8 +272,49 @@ exportBtn.addEventListener('click', function(e) {
     var canvas = document.querySelectorAll('canvas');
     console.log(canvas);
     canvas[2].toBlob(function(blob) {
-        saveAs(blob, "pretty image.png");
+        saveAs(blob, "Graph.png");
     });
-
 });
-  
+
+// show element conpect
+function showElement(element) {
+    // var bfs = cy.elements().bfs(`${element}`, function(){}, true);
+    var bfs = cy.elements().bfs(`${element}`, function(){}, true);
+    var i = 0;
+    var highlightNextEle = function(){
+      if( i < bfs.path.length ){
+        // thêm class vào trong nút
+        bfs.path[i].addClass('highlighted');
+
+        // thêm class vào cung nếu có cung => if ở đây tránh bị lỗi
+        if(bfs.path[i]._private.edges[0]) {
+            bfs.path[i]._private.edges[0].addClass('highlighted');
+        }   
+        i++;
+        setTimeout(highlightNextEle, 1000);
+      }
+    };
+    highlightNextEle();
+}
+
+function showHighlight(path) {  
+    var i = 0;
+
+    path.push(0)
+    console.log(path);
+    var showHighlight = function(){
+      if( i <= path.length ){
+        // thêm class vào trong nút
+        
+        cy.$(`#${arrayNodes[path[i]]}`).addClass('highlighted');
+        // chọn cung
+        cy.$(`#${arrayNodes[path[i]]}${arrayNodes[path[i+1]]}`).addClass('highlighted');
+        cy.$(`#${arrayNodes[path[i+1]]}${arrayNodes[path[i]]}`).addClass('highlighted');
+        i++;
+        setTimeout(showHighlight, 1000);
+      }
+    };
+    showHighlight();
+}
+
+

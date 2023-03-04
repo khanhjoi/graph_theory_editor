@@ -9,6 +9,7 @@
 
     </style>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="w3.css">
     <title>Graph_edit</title>
 </head>
 <body>
@@ -18,35 +19,50 @@
         <div id="cy">
 
         </div>
-        <div class="handle_Graph">
-          <div id="edit_graph">
-            <h1 style="display: inline-block">Vẽ đồ thị:</h1>
-            <input id="add" type="checkbox" name="chinh sua">
-            <div id="edit">
-      
+        <div class="navigation">
+          <div class="w3-bar w3-black nav_list">
+            <button class="w3-bar-item w3-button draw active" onclick="openFunction('Vẽ đồ thị')">Vẽ đồ thị</button>
+            <button class="w3-bar-item w3-button" onclick="openFunction('Tìm số miền liên thông')">Tìm số miền liên thông</button>
+            <button class="w3-bar-item w3-button" onclick="openFunction('Tìm chu trình hamilton')">Tìm chu trình hamilton</button>
+            <button class="w3-bar-item w3-button" onclick="openFunction('Xuất file')">Xuất file</button>
+          </div>
+          <div id="Vẽ đồ thị" class="w3-container function">
+            <div class="group_editBTN">
+              <button id="delete" class="button-55 btn ml-15">Xóa</button>
+              <button id="addEdge" class="button-55 btn ml-15">Thêm cung</button>
+            </div>
+            <div class="edit_select">
+              <h4>Chọn cung</h4>
+              <label for="nodes1">Đỉnh thứ nhất:</label>
+              <select name="nodes1" id="nodes1"></select>
+              <label for="nodes2" style="margin-left: 16px">Đỉnh thứ hai:</label>
+              <select name="nodes2" id="nodes2"></select>
             </div>
           </div>
-          <div id="function">
-            <h1>Chức năng:</h1>
+          
+          <div id="Tìm số miền liên thông" class="w3-container function" style="display:none">
             <div id="ConnectedComponent">
               <button id="Connect" class="button-55 btn">Tìm số miền liên thông</button>
               <div class="show_ConnectCpn">
-        
+          
               </div>
             </div>
+          </div>
+          <div id="Tìm chu trình hamilton" class="w3-container function" style="display:none">
             <div id="findHamilton">
               <button id="find" class="button-55 btn">Tìm chu trình</button>
               <div class="showSolution"></div>
             </div>
+          </div>
+          <div id="Xuất file" class="w3-container function" style="display:none">
             <div id="export">
               <button id="exportBtn" class="button-55 btn" >
-                    xuất file
+                      xuất file
               </button>
               <img src="" alt="" id ="img">
             </div>
           </div>
-        </div>
-        
+       </div>   
       </div>
     </section>
     

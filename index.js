@@ -10,62 +10,51 @@ var cy =  cytoscape({
     },
 
   layout: {
-      name: 'grid',
-      rows: 1
+    name: 'breadthfirst',
+    directed: true,
+    roots: ``,
+    padding: 10
   },
 
-// so we can see the ids
-  style: [
-    {
-      selector: 'node',
-      style: {
-        'label': 'data(id)'
-      }
-    }
-  ],
+  style: cytoscape.stylesheet()
+  .selector('node')
+    .style({
+      'content': 'data(id)'
+    })
+  .selector('edge')
+    .style({
+      'curve-style': 'bezier',
+      'width': 4,
+    })
+  .selector('.highlighted')
+    .style({
+      'background-color': '#61bffc',
+      'line-color': '#61bffc',
+      'target-arrow-color': '#61bffc',
+      'transition-property': 'background-color, line-color, target-arrow-color',
+      'transition-duration': '0.5s'
+    }),
   motionBlur : true,
   panningEnabled: false,
+  boxSelectionEnabled: false,
+  autounselectify: true,
 });
 
 // tao danh sach nut dau tien
 var arrayNodes = [];
 var arrayEdges = [];
 var numberNodes = 0;
-var btnAdd = document.getElementById('add'); 
+var btnAddEdge = document.getElementById('addEdge');
+var btnDlt = document.getElementById('delete');
+
 
 // ======================== Thêm Cung ======================
-btnAdd.onclick = function(e) {
-  
-  let editContainer = document.getElementById('edit');
-
-  if(btnAdd.checked) {
-    editContainer.innerHTML = `
-    <div class="group_editBTN">
-      <button id="delete" class="button-55 btn ml-15">Xóa</button>
-      <button id="addEdge" class="button-55 btn ml-15">Thêm cung</button>
-    </div>
-    <div class="edit_select">
-      <h4>Chọn cung</h4>
-      <label for="nodes1">Đỉnh thứ nhất:</label>
-      <select name="nodes1" id="nodes1"></select>
-      <label for="nodes2" style="margin-left: 16px">Đỉnh thứ hai:</label>
-      <select name="nodes2" id="nodes2"></select>
-    </div>
-    
-    `
-  }else {
-    editContainer.innerHTML = ``;
-  }
-
-
-  
-  // danh sách đỉnh 
-  var ListOpt1 = document.getElementById('nodes1');
-  var ListOpt2 = document.getElementById('nodes2');
-  
-
-  // thêm đỉnh vào danh sách chọn 1
-  if(ListOpt1) {
+ 
+// danh sách đỉnh 
+var ListOpt1 = document.getElementById('nodes1');
+var ListOpt2 = document.getElementById('nodes2');
+// thêm đỉnh vào danh sách chọn 1
+if(ListOpt1) {
     ListOpt1.onmouseover = function(e) {
       if(ListOpt1.children.length === numberNodes) {
         // bỏ qua trường hợp đã thêm vào rồi 
@@ -84,9 +73,9 @@ btnAdd.onclick = function(e) {
         }
       }
     }
-  }
-  // thêm đỉnh vào danh sách chọn 2
-  if(ListOpt2) {
+}
+// thêm đỉnh vào danh sách chọn 2
+if(ListOpt2) {
     ListOpt2.onmouseover = function(e) {
       if(ListOpt2.children.length === numberNodes) {
         // bỏ qua trường hợp đã thêm vào rồi 
@@ -103,12 +92,9 @@ btnAdd.onclick = function(e) {
         }
       }
     }
-  }
-
-  let btnAddEdge = document.getElementById('addEdge');
-  // thêm cung vào độ thị
-  
-  if(btnAddEdge) {
+}
+// thêm cung vào độ thị  
+if(btnAddEdge) {
     btnAddEdge.onclick = function(){
       if(ListOpt1.innerText != "" &&  ListOpt2.innerText != ""){
         cy.add([
@@ -118,25 +104,28 @@ btnAdd.onclick = function(e) {
         refreshListNodes();
         // them cung vao ma tran
         addEdge();
+      }else {
+        alert('Chon dinh de them cung'); 
       }
     }
-  }
 }
+
 // ========================================================
 
 // chon va xoa 
 cy.on('click', function(e){
   // bien su kien
   var clicked = e.target;
+  let addNav = document.querySelector('.draw'); 
 
   // ================== thêm đỉnh ====================
-  if(btnAdd.checked) {
+  if(addNav.classList.contains('active')) {
     if(clicked._private.group === "nodes" || clicked._private.group === "edges" ){
       // bỏ qua nhũng vị trí không phải nút và cung
     }else {
       numberNodes++;
       cy.add([
-        { group: 'nodes', data: { id: `${numberNodes}` }, position: { x: 300, y: 300 } },
+        { group: 'nodes', data: { id: `${numberNodes}` }, position: { x: e.position.x, y: e.position.y } },
       ]);
       refreshListNodes();
     }
@@ -156,17 +145,31 @@ cy.on('click', function(e){
   }
   
   // kiem tra va xoa nut
-  const btnDlt = document.getElementById('delete');
-  if(btnDlt) {
-    btnDlt.onclick = function() {
-      if(flag){
-        cy.remove(clicked);
-      }
-      refreshListNodes();
-    }
+  btnDlt.onclick = function() {
+    deleteNode(flag, clicked);
   }
+  
   // =========================================
 });
+// trường hợp người dùng nhấn vào nút xóa
+btnDlt.onclick = function() {
+  deleteNode();
+}
+
+function deleteNode(flag, clicked) {
+  if(arrayNodes.length == 0) {
+    alert('Chưa vẽ đồ thị');
+    return;
+  }
+  
+  if(flag){
+    cy.remove(clicked);
+  }else{
+    alert('Chưa chọn đối tượng xóa');
+  }
+
+  refreshListNodes();
+}
 
 function refreshListNodes() {
   // Chuyển mảng obj sang thành array
@@ -186,4 +189,25 @@ function refreshListNodes() {
       }
     }
    }
+}
+
+// select tab 
+function openFunction(func) {
+  var i;
+  var tab = document.getElementsByClassName("w3-button");
+  var tabContent = document.getElementsByClassName("function");
+  
+  // ẩn nội dung điều hướng và xóa atr của tab
+  for (i = 0; i < tabContent.length; i++) {
+    tabContent[i].style.display = "none";
+    tab[i].classList.remove('active');
+  }
+  // gán lại atr cho tab vừa chọn
+  for (i = 0; i < tabContent.length; i++) {
+    if(tab[i].innerText === func) {
+      tab[i].classList.add('active');
+    }
+  }
+  // chỉnh lại nội dung cho tab
+  document.getElementById(func).style.display = "block";
 }
