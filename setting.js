@@ -1,320 +1,227 @@
-
-var matrix = [];
-
-// Tạo ma trận
-function initGraph() {
-    matrix = new Array(arrayNodes.length);
-
-    for (let i = 0; i < arrayNodes.length; i++) {
-        matrix[i] = new Array(arrayNodes.length);
-    };
+var cy =  cytoscape({
+  container: document.getElementById('cy'),
+  elements: {
+    nodes: [
     
-    for (let i = 0; i < arrayNodes.length; i++) {
-        for (var j = 0; j < arrayNodes.length; j++) {
-            matrix[i][j] = 0;
-        }
-    };
-}
+    ],
+    edges: [
+      
+    ]
+    },
 
+  layout: {
+    name: 'breadthfirst',
+    directed: true,
+    roots: ``,
+    padding: 10
+  },
 
-// thêm cung
-function addEdge() {
-    initGraph();
-    for (let i = 0; i < arrayEdges.length; i++) {
-        let index1 = arrayNodes.indexOf(`${arrayEdges[i][0]}`)
-        let index2 = arrayNodes.indexOf(`${arrayEdges[i][1]}`)
-        matrix[index1][index2] = 1
-        matrix[index2][index1] = 1
-        // console.log(arrayEdges[i][0], arrayEdges[i][1], index1, index2, arrayNodes)
-    }
-}
-
-// hàng sớm
-function neighbor(node) {
-    let arr = [];
-    for (let i = 0; i < matrix.length; i++) {
-        if(matrix[node][i] === 1) {
-            arr.push(i);
-        }
-    }
-    return arr;
-}
-
-// ==================== khời tạo ngăn xếp ===========================
-class Stack {
-    // hàm khởi tạo
-    constructor(){
-        this.items = [];
-    }
-
-    // thêm vào stack
-    push(item){
-        this.items.push(item);
-    }
-
-    // xóa phần tử khỏi stack
-    pop() {
-        if(this.items.length == 0){
-            return "underflow";
-        }
-        return this.items.pop();
-    }
-
-    // hiển thị phần tử
-    peek() {
-        return this.items[this.items.length - 1];
-    }
-
-    // kiểm tra stack empty
-    isEmpty() {
-        return this.items.length == 0;
-    }
-}
-
-var visit = [];
-
-function initVisit() {
-     for (let i = 0; i < matrix.length; i++) {
-        visit[i] = 0;
-    }
-}
-
-
-// duyệt theo chiều sâu
-function Depth_first_search(node) {
-    // khoi tao danh sach
-    let stack = new Stack();
-    // thêm nút đầu tiên vào stack
-    stack.push(node);
-
-    //duyệt
-    while(!stack.isEmpty()) {
-        let x = stack.peek();
-        stack.pop();
-
-        if(visit[x] != 0) {
-            continue;
-        }
-
-        visit[x] = 1;
-        
-
-        showElement(x);     
-        let list = neighbor(x);
-
-        for (let i = 0; i < list.length; i++) {
-            let y = list[i];
-            stack.push(y);
-        }
-    }
-}
-// kiểm tra miền liên thông
-function ConnectedComponent() {
-    // làm mới lại danh sách nút
-    refreshListNodes();
-    // khởi tạo lại đồ thị
-    initGraph();
-    // thêm cung vào đồ thị
-    addEdge();
-    // khởi tạo lại danh sách thăm
-    initVisit();
-    let cnt = 0;
-    for( let i = 0; i < matrix.length; i++) {
-        if(visit[i] == 0) {
-            cnt ++;
-            Depth_first_search(i);
-        }
-    }
-    return cnt;
-}
-
-const Connect = document.getElementById('Connect');
-
-Connect.addEventListener('click', () => {
-    let cnt = ConnectedComponent();
-
-    const show = document.querySelector(".show_ConnectCpn");
-    if(cnt > 0) {
-        show.innerHTML  = `${cnt}`;
-    }else {
-        show.innerHTML  = `Không có miền liên thông nào`;
-    }
-    
-})
-
-// định nghĩa lớp + phước thức để tìm hamilton
-class HamiltonianCycle {
-    constructor() {
-        this.V = arrayNodes.length;
-        this.path = [];
-    }
- 
-    /* kiểm tra coi đỉnh v có thể thêm vào chu trình Hamilton hay không*/
-    isSafe(v, graph, path, pos) {
-        /* kiểm tra coi đỉnh hiện tại có kề với đỉnh ở phía trước hay kh */
-        if ( graph[path[pos - 1]][v] == 0) return false;
- 
-        /* coi đỉnh có ở trong đường đi phía trước hay không */
-        for (var i = 0; i < pos; i++) if (path[i] == v) return false;
-        
-        return true;
-    }
- 
-    /*đệ quy để tìm chu trình hamilton*/
-    hamCycleUtil(graph, path, pos) {
-        /* Trường hợp các đỉnh đã được thêm vào tru trình Hamilton */
-        if (pos == this.V) {
-            // nếu có đường đi từ đỉnh cuối đến đỉnh đầu => có chu trình hamilton
-            if (graph[path[pos - 1]][path[0]] == 1) return true;
-            else return false;
-        }
- 
-        // kiểm tra các đỉnh khác trong đồ thị
-        // không kiểm tra đỉnh 0, đỉnh không là đỉnh bắt đầu
-        for (var v = 1; v < this.V; v++) {
-            /* Nếu đỉnh có thể thêm vào chu trình */
-            if (this.isSafe(v, graph, path, pos)) {
-              path[pos] = v;
-              /* đệ quy lại cho đến khi gặp đỉnh cuối */
-              if (this.hamCycleUtil(graph, path, pos + 1) == true) return true;
- 
-              /* Nếu đỉnh không phải là đường đi hamilton thì trả về vị trí trước đó */
-              path[pos] = -1;
-            }
-        }
- 
-          /* Nếu không có đỉnh nào thêm vào => không có chu trình hamilton*/
-        return false;
-    }
- 
-    
-    hamCycle(graph) {
-        this.path = new Array(this.V).fill(0);
-        for (var i = 0; i < this.V; i++) this.path[i] = -1;
- 
-        // cho đỉnh đầu vào chu trình
-        this.path[0] = 0;
-
-        // trường hợp không có chu trình hamilton
-        if (this.hamCycleUtil(graph, this.path, 1) == false) {
-            let show = document.querySelector(".showSolution");
-            show.innerHTML = "Không tồn tại chu trình Hamilton";
-
-            // làm mới lại file
-            hamiltonianPart = [];
-            hamiltonianPart = "Không tồn tại chu trình Hamilton";
-            return 0;
-        }
- 
-        this.printSolution(this.path);
-        return 1;
-    }
- 
-    // in chu trình hamilton
-    printSolution(path) {
-        let show =  document.querySelector(".showSolution");
-        show.innerText = "Chu trình hamilton: "
-        // làm mới lại file
-        hamiltonianPart = [];
-        for (var i = 0; i < this.V; i++) {
-            hamiltonianPart.push(arrayNodes[path[i]]);          
-            show.innerText  += `  ${arrayNodes[path[i]]}`;
-        }
-        showHighlight(path);
-
-        hamiltonianPart.push(arrayNodes[path[0]]);
-        show.innerText += ` ${arrayNodes[path[0]]}`;
-        
-    }
-
-    
-}
-
-//  ***** Tìm chu trình hamilton ****
-const findBtn= document.getElementById('find');
-findBtn.addEventListener('click', () => {
-    // làm mới danh sách đỉnh cung
-    refreshListNodes();
-    // thêm lại các đỉnh vào ma trận
-    addEdge();
-    var hamiltonian = new HamiltonianCycle();
-    hamiltonian.hamCycle(matrix);
-})
-
-
-
-var hamiltonianPart = [];
-// export text
-function saveFileText(){
-    // làm mới danh sách đỉnh cung
-    refreshListNodes();
-    // thêm lại các đỉnh vào ma trận
-    addEdge();
-    var hamiltonian = new HamiltonianCycle();
-    hamiltonian.hamCycle(matrix);
-
-    var blob = new Blob([`******Thông tin đồ thị****** 
-    - Danh sách đỉnh: ${arrayNodes}
-    - Danh sách cung: ${arrayEdges}
-    - Số miền liên thông: ${ConnectedComponent()}
-    - Chu trình Hamilton: ${hamiltonianPart}
-    `],{ type: "text/plain;charset=utf-8" });
-    saveAs(blob, "Graph.txt");
-}
-
-const exportBtn = document.getElementById('export');  
-exportBtn.addEventListener('click', function(e) {
-    if(arrayNodes.length === 0) {
-        alert('Bạn chưa vẽ đồ thị !!!');
-        return ;
-    }
-    saveFileText();
-    var canvas = document.querySelectorAll('canvas');
-    console.log(canvas);
-    canvas[2].toBlob(function(blob) {
-        saveAs(blob, "Graph.png");
-    });
+  style: cytoscape.stylesheet()
+  .selector('node')
+    .style({
+      'content': 'data(id)'
+    })
+  .selector('edge')
+    .style({
+      'curve-style': 'bezier',
+      'width': 4,
+    })
+  .selector('.highlighted')
+    .style({
+      'background-color': '#61bffc',
+      'line-color': '#61bffc',
+      'target-arrow-color': '#61bffc',
+      'transition-property': 'background-color, line-color, target-arrow-color',
+      'transition-duration': '0.5s'
+    }),
+  motionBlur : true,
+  panningEnabled: false,
+  boxSelectionEnabled: false,
+  autounselectify: true,
 });
 
-// show element conpect
-function showElement(element) {
-    // var bfs = cy.elements().bfs(`${element}`, function(){}, true);
-    var bfs = cy.elements().bfs(`${element}`, function(){}, true);
-    var i = 0;
-    var highlightNextEle = function(){
-      if( i < bfs.path.length ){
-        // thêm class vào trong nút
-        bfs.path[i].addClass('highlighted');
+// tao danh sach nut dau tien
+var arrayNodes = [];
+var arrayEdges = [];
+var numberNodes = 0;
+var btnAddEdge = document.getElementById('addEdge');
+var btnDlt = document.getElementById('delete');
 
-        // thêm class vào cung nếu có cung => if ở đây tránh bị lỗi
-        if(bfs.path[i]._private.edges[0]) {
-            bfs.path[i]._private.edges[0].addClass('highlighted');
-        }   
-        i++;
-        setTimeout(highlightNextEle, 1000);
+
+// ======================== Thêm Cung ======================
+ 
+// danh sách đỉnh 
+var ListOpt1 = document.getElementById('nodes1');
+var ListOpt2 = document.getElementById('nodes2');
+// thêm đỉnh vào danh sách chọn 1
+if(ListOpt1) {
+    ListOpt1.onmouseover = function(e) {
+      if(ListOpt1.children.length === numberNodes) {
+        // bỏ qua trường hợp đã thêm vào rồi 
+      }else {
+        // xóa đỉnh đã bấm trước đó
+        ListOpt1.innerHTML = "";
+        // goi lai tao danh sach nut
+        refreshListNodes();    
+        // thêm đỉnh vào danh sách chọn
+        for(var i = 0; i < arrayNodes.length; i++) {
+          var option = document.createElement('option');
+          var optionText = document.createTextNode(`${arrayNodes[i]}`);
+          option.appendChild(optionText);
+          option.setAttribute('value', arrayNodes[i]);
+          ListOpt1.appendChild(option);
+        }
       }
-    };
-    highlightNextEle();
+    }
+}
+// thêm đỉnh vào danh sách chọn 2
+if(ListOpt2) {
+    ListOpt2.onmouseover = function(e) {
+      if(ListOpt2.children.length === numberNodes) {
+        // bỏ qua trường hợp đã thêm vào rồi 
+      }else {
+        // xóa đỉnh đã bấm trước đó
+        ListOpt2.innerHTML = ``;
+        // goi lai tao danh sach nut
+        refreshListNodes();    
+        // thêm đỉnh vào danh sách chọn
+        for(var i = 0; i < arrayNodes.length; i++) {
+          var ListNodes = document.createElement('option');
+          ListNodes.innerHTML = `${arrayNodes[i]}`
+          ListOpt2.appendChild(ListNodes);
+        }
+      }
+    }
+}
+// thêm cung vào độ thị  
+if(btnAddEdge) {
+    btnAddEdge.onclick = function(){
+      if(ListOpt1.innerText != "" &&  ListOpt2.innerText != ""){
+        cy.add([
+          { group: 'edges', data: { id: `${ListOpt1.value}${ListOpt2.value}`, source: `${ListOpt1.value}`, target: `${ListOpt2.value}` } },   
+        ]);
+        // lam moi lai danh sach cung va danh sach dinh
+        refreshListNodes();
+        // them cung vao ma tran
+        addEdge();
+      }else {
+        alert('Chon dinh de them cung'); 
+      }
+    }
 }
 
-function showHighlight(path) {  
-    var i = 0;
+// ========================================================
 
-    path.push(0)
-    console.log(path);
-    var showHighlight = function(){
-      if( i <= path.length ){
-        // thêm class vào trong nút
-        
-        cy.$(`#${arrayNodes[path[i]]}`).addClass('highlighted');
-        // chọn cung
-        cy.$(`#${arrayNodes[path[i]]}${arrayNodes[path[i+1]]}`).addClass('highlighted');
-        cy.$(`#${arrayNodes[path[i+1]]}${arrayNodes[path[i]]}`).addClass('highlighted');
-        i++;
-        setTimeout(showHighlight, 1000);
-      }
-    };
-    showHighlight();
+// chon va xoa 
+cy.on('click', function(e){
+  // bien su kien
+  var clicked = e.target;
+  let addNav = document.querySelector('.draw'); 
+
+  // xóa class khi thêm được đỉnh 
+  cy.nodes().classes([]);
+  cy.edges().classes([]);
+  
+  
+  // ================== thêm đỉnh ====================
+  if(addNav.classList.contains('active')) {
+    if(clicked._private.group === "nodes" || clicked._private.group === "edges" ){
+      cy.$(`#${clicked._private.data.id}`).addClass('highlighted');
+    }else {
+      numberNodes++;
+      cy.add([
+        { group: 'nodes', data: { id: `${numberNodes}` }, position: { x: e.position.x, y: e.position.y } },
+      ]);
+      refreshListNodes();
+    }
+  }
+
+
+  
+  // ===============================================
+
+  // =============== xóa đỉnh =================
+  // cờ
+  var flag = false;
+  // kiểm tra có phải là đỉnh hoặt cung => xóa
+  if(clicked._private.group === "nodes" || clicked._private.group === "edges" ){
+    flag = true;
+  }else{
+    // reset lại cờ
+    flag = false;
+  }
+  
+  // kiem tra va xoa nut
+  btnDlt.onclick = function() {
+    deleteNode(flag, clicked);
+  }
+  
+  // =========================================
+});
+// trường hợp người dùng nhấn vào nút xóa
+btnDlt.onclick = function() {
+  deleteNode();
+}
+
+function deleteNode(flag, clicked) {
+  if(arrayNodes.length == 0) {
+    alert('Chưa vẽ đồ thị');
+    return;
+  }
+  
+  if(flag){
+    cy.remove(clicked);
+  }else{
+    alert('Chưa chọn đối tượng xóa');
+  }
+
+  refreshListNodes();
 }
 
 
+// reset ds đỉnh và ds cung
+function refreshListNodes() {
+  // Chuyển mảng obj sang thành array
+  var arrayElement = Object.entries(cy._private.elements);
+  // console.log(arrayElement)
+  // reset lai mảng
+  arrayNodes = [];
+  arrayEdges = [];
+  for (let i = 0; i < arrayElement.length - 2; i++) {
+    //kiem tra co phai la nut moi cho vao danh sach nut
+    if(arrayElement[i][1]) {
+      if(arrayElement[i][1]._private.group === 'nodes') {
+        arrayNodes.push(arrayElement[i][1]._private.data.id);
+        arrayNodes.sort();
+      }
+      if(arrayElement[i][1]._private.group === 'edges') {
+        arrayEdges.push(arrayElement[i][1]._private.data.id)
+      }
+    }
+   }
+}
+
+// select tab 
+function openFunction(func) {
+  var i;
+  var tab = document.getElementsByClassName("w3-button");
+  var tabContent = document.getElementsByClassName("function");
+
+  // reset style
+  cy.nodes().classes([]);
+  cy.edges().classes([]);
+
+  // ẩn nội dung điều hướng và xóa atr của tab
+  for (i = 0; i < tabContent.length; i++) {
+    tabContent[i].style.display = "none";
+    tab[i].classList.remove('active');
+  }
+  // gán lại atr cho tab vừa chọn
+  for (i = 0; i < tabContent.length; i++) {
+    if(tab[i].innerText === func) {
+      tab[i].classList.add('active');
+    }
+  }
+  // chỉnh lại nội dung cho tab
+  document.getElementById(func).style.display = "block";
+}

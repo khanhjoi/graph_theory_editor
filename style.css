@@ -117,3 +117,20 @@ body{
 .button-55:focus {
   box-shadow: rgba(0, 0, 0, .3) 2px 8px 4px -6px;
 }
+
+.ListGraph{
+  width: 100%;
+  height: 100px;
+  background-color: #ccc;
+}
+
+.ListGraph li{
+  padding: 10px 0;
+}
+.ListGraph li:hover{
+  color: blue;
+}
+
+.ListGraph li a{
+  text-decoration: none;
+}
