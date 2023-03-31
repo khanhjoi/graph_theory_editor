@@ -25,7 +25,6 @@ function addEdge() {
         let index2 = arrayNodes.indexOf(`${arrayEdges[i][1]}`)
         matrix[index1][index2] = 1
         matrix[index2][index1] = 1
-        // console.log(arrayEdges[i][0], arrayEdges[i][1], index1, index2, arrayNodes)
     }
 }
 
@@ -81,6 +80,7 @@ function initVisit() {
     }
 }
 
+var pathHighlight = [];
 
 // duyệt theo chiều sâu
 function Depth_first_search(node) {
@@ -99,9 +99,8 @@ function Depth_first_search(node) {
         }
 
         visit[x] = 1;
-        
-
-        showElement(x);     
+        showElement(x);
+           
         let list = neighbor(x);
 
         for (let i = 0; i < list.length; i++) {
@@ -113,6 +112,7 @@ function Depth_first_search(node) {
 
 // kiểm tra miền liên thông
 function ConnectedComponent() {
+    pathHighlight = []
     // làm mới lại danh sách nút
     refreshListNodes();
     // khởi tạo lại đồ thị
@@ -253,9 +253,7 @@ function saveFileText(){
     refreshListNodes();
     // thêm lại các đỉnh vào ma trận
     addEdge();
-    var hamiltonian = new HamiltonianCycle();
-    hamiltonian.hamCycle(matrix);   
-    console.log(cy.json());
+
     var blob = new Blob([`${JSON.stringify(cy.json())}`],{ type: "text/plain;charset=utf-8" });
     saveAs(blob, "Graph.txt");
 }
@@ -273,12 +271,21 @@ exportBtn.addEventListener('click', function(e) {
 document.getElementById("OpenBtn").addEventListener("change", function () {
     var fr = new FileReader();
     fr.readAsText(this.files[0]);
+    // reset class nút và cung cho đồ thị
+    
+
     fr.onload = function () {
         const graphFile = JSON.parse(fr.result);
         
-        let listEdge = graphFile.elements.nodes;
-        let listNode = graphFile.elements.edges;
-        let arrayGraph = listEdge.concat(listNode);
+        let listNode = graphFile.elements.nodes;
+        let listEdge = graphFile.elements.edges;
+        let arrayGraph;
+        // kiểm tra xem nếu có danh sách cung thì hợp lại không thì chỉ có danh sách đỉnh
+        if(listEdge != undefined) {
+            arrayGraph = listNode.concat(listEdge);
+        }else {
+            arrayGraph = [...listNode];
+        }
         
         // làm mới danh sách đỉnh danh sách cung
         refreshListNodes();
@@ -291,8 +298,9 @@ document.getElementById("OpenBtn").addEventListener("change", function () {
             });
         }
         
-        // console.log(arrayNodes)
         cy.add(arrayGraph);
+        // làm mới danh sách đỉnh danh sách cung
+        refreshListNodes();
     };  
   });
 
@@ -304,11 +312,12 @@ function showElement(element) {
     var highlightNextEle = function(){
       if( i < bfs.path.length ){
         // thêm class vào trong nút
-        bfs.path[i].addClass('highlighted');
-
+        // bfs.path[i].addClass('highlighted');
+        bfs.path[i].select()
         // thêm class vào cung nếu có cung => if ở đây tránh bị lỗi
         if(bfs.path[i]._private.edges[0]) {
-            bfs.path[i]._private.edges[0].addClass('highlighted');
+            // bfs.path[i]._private.edges[0].addClass('highlighted');
+            bfs.path[i]._private.edges[0].select();
         }   
         i++;
         setTimeout(highlightNextEle, 1000);
@@ -320,15 +329,13 @@ function showElement(element) {
 function showHighlight(path) {  
     var i = 0;
     path.push(0)
-    console.log(path);
     var showHighlight = function(){
       if( i <= path.length ){
         // thêm class vào trong nút
-        
-        cy.$(`#${arrayNodes[path[i]]}`).addClass('highlighted');
+        cy.$(`#${arrayNodes[path[i]]}`).select();
         // chọn cung
-        cy.$(`#${arrayNodes[path[i]]}${arrayNodes[path[i+1]]}`).addClass('highlighted');
-        cy.$(`#${arrayNodes[path[i+1]]}${arrayNodes[path[i]]}`).addClass('highlighted');
+        cy.$(`#${arrayNodes[path[i]]}${arrayNodes[path[i+1]]}`).select()
+        cy.$(`#${arrayNodes[path[i+1]]}${arrayNodes[path[i]]}`).select();
         i++;
         setTimeout(showHighlight, 1000);
       }
